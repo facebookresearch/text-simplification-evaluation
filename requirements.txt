@@ -1,0 +1,9 @@
+pytest
+numpy
+scipy
+pandas
+torch
+sklearn
+gitpython
+git+https://github.com/pytorch/fairseq@e286243c68f1589a781488580fc19388714612be
+git+https://github.com/Maluuba/nlg-eval.git
