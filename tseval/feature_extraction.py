@@ -67,24 +67,30 @@ def count_characters(sentence):
     return len(sentence)
 
 
+def safe_division(a, b):
+    if b == 0:
+        return b
+    return a / b
+
+
 def count_words_per_sentence(sentence):
-    return count_words(sentence) / count_sentences(sentence)
+    return safe_division(count_words(sentence), count_sentences(sentence))
 
 
 def count_characters_per_sentence(sentence):
-    return count_characters(sentence) / count_sentences(sentence)
+    return safe_division(count_characters(sentence), count_sentences(sentence))
 
 
 def count_syllables_per_sentence(sentence):
-    return count_syllables_in_sentence(sentence) / count_sentences(sentence)
+    return safe_division(count_syllables_in_sentence(sentence), count_sentences(sentence))
 
 
 def count_characters_per_word(sentence):
-    return count_characters(sentence) / count_words(sentence)
+    return safe_division(count_characters(sentence), count_words(sentence))
 
 
 def count_syllables_per_word(sentence):
-    return count_syllables_in_sentence(sentence) / count_words(sentence)
+    return safe_division(count_syllables_in_sentence(sentence), count_words(sentence))
 
 
 def max_pos_in_freq_table(sentence):
