@@ -30,7 +30,7 @@ pytest tests/
 ## References
 
 If you use this code, please cite:  
-L. Martin, S. Humeau, PE. Mazaré, E. De la Clergerie, A. Bordes, B. Sagot, *Reference-less Quality Estimation of Text Simplification Systems*
+L. Martin, S. Humeau, PE. Mazaré, E. De la Clergerie, A. Bordes, B. Sagot, [*Reference-less Quality Estimation of Text Simplification Systems*](https://arxiv.org/abs/1901.10746)
 
 ## Author
 
