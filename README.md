@@ -1,6 +1,6 @@
 # Reference-less Quality Estimation of Text Simplification Systems
 
-This repository contains the original implementation of the evaluation methods presented in [Reference-less Quality Estimation of Text Simplification Systems](https://www.ida.liu.se/~evere22/ATA-18/papers/paper_7.pdf) (1st Workshop on Automatic Text Adaption, INLG 2018).
+This repository contains the original implementation of the evaluation methods presented in [Reference-less Quality Estimation of Text Simplification Systems](https://www.aclweb.org/anthology/W18-7005) (1st Workshop on Automatic Text Adaption, INLG 2018).
 
 You can get a quick glance on what the code does in [demo/reference_less_evaluation.ipynb](https://github.com/facebookresearch/text-simplification-evaluation/blob/master/demo/reference_less_evaluation.ipynb).
 
