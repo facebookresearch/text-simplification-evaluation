@@ -3,7 +3,7 @@
 This repository contains the original implementation of the evaluation methods presented in [Reference-less Quality Estimation of Text Simplification Systems](https://www.aclweb.org/anthology/W18-7005) (1st Workshop on Automatic Text Adaption, INLG 2018).
 The version that was used at submission time is on branch [submission](https://github.com/facebookresearch/text-simplification-evaluation/tree/submission).
 
-You can get a quick glance on what the code does in [demo/reference_less_evaluation.ipynb](https://github.com/facebookresearch/text-simplification-evaluation/blob/master/demo/reference_less_evaluation.ipynb).
+You can get a quick glance on what the code does in [demo/reference_less_evaluation.ipynb](https://github.com/facebookresearch/text-simplification-evaluation/blob/submission/demo/reference_less_evaluation.ipynb).
 
 ## Getting Started
 
