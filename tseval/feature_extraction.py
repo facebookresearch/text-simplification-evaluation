@@ -6,7 +6,7 @@
 #
 
 import itertools
-import functools
+from functools import lru_cache
 import os
 
 from nlgeval import NLGEval
@@ -24,12 +24,14 @@ from tseval.embeddings import to_embeddings
 from tseval.evaluation.readability import sentence_fre, sentence_fkgl
 from tseval.evaluation.terp import get_terp_vectorizers
 from tseval.evaluation.quest import get_quest_vectorizers
-from tseval.resources.paths import VARIOUS_DIR
-from tseval.text import count_words, count_sentences, to_words, count_syllables_in_sentence
+from tseval.resources.paths import VARIOUS_DIR, FASTTEXT_EMBEDDINGS_PATH
+from tseval.text import (count_words, count_sentences, to_words, count_syllables_in_sentence, remove_stopwords,
+                         remove_punctuation_tokens)
 from tseval.models.language_models import average_sentence_lm_prob, min_sentence_lm_prob
+from tseval.utils import yield_lines
 
 
-# Single sentence feature extractors with signature method(sentence) -> float
+@lru_cache(maxsize=1)
 def get_word2concreteness():
     concrete_words_path = os.path.join(VARIOUS_DIR, 'concrete_words.tsv')
     df = pd.read_csv(concrete_words_path, sep='\t')
@@ -37,30 +39,71 @@ def get_word2concreteness():
     return {row['Word']: row['Conc.M'] for _, row in df.iterrows()}
 
 
-def get_frequency_ranking():
+@lru_cache(maxsize=1)
+def get_word2frequency():
     frequency_table_path = os.path.join(VARIOUS_DIR, 'enwiki_frequency_table.tsv')
-    frequency_ranking = {}
-    with open(frequency_table_path, 'r') as f:
-        for i, line in enumerate(f):
-            word = line.split('\t')[0]
-            frequency_ranking[word] = i
-    return frequency_ranking
+    word2frequency = {}
+    for line in yield_lines(frequency_table_path):
+        word, frequency = line.split('\t')
+        word2frequency[word] = int(frequency)
+    return word2frequency
 
 
+@lru_cache(maxsize=1)
+def get_word2rank(vocab_size=np.inf):
+    # TODO: Decrease vocab size or load from smaller file
+    word2rank = {}
+    line_generator = yield_lines(FASTTEXT_EMBEDDINGS_PATH)
+    next(line_generator)  # Skip the first line (header)
+    for i, line in enumerate(line_generator):
+        if (i+1) > vocab_size:
+            break
+        word = line.split(' ')[0]
+        word2rank[word] = i
+    return word2rank
+
+
+def get_concreteness(word):
+    # TODO: Default value is arbitrary
+    return get_word2concreteness().get(word, 5)
+
+
+def get_frequency(word):
+    return get_word2frequency().get(word, None)
+
+
+def get_negative_frequency(word):
+    return -get_frequency(word)
+
+
+def get_rank(word):
+    return get_word2rank().get(word, len(get_word2rank()))
+
+
+def get_negative_log_frequency(word):
+    return -np.log(1 + get_frequency(word))
+
+
+def get_log_rank(word):
+    return np.log(1 + get_rank(word))
+
+
+# Single sentence feature extractors with signature method(sentence) -> float
 def get_concreteness_scores(sentence):
-    if 'WORD2CONCRETENESS' not in globals():
-        global WORD2CONCRETENESS
-        WORD2CONCRETENESS = get_word2concreteness()
-    # TODO: Default value is completely arbitrary
-    return np.log(1 + np.array([WORD2CONCRETENESS.get(word, 3) for word in to_words(sentence)]))
+    return np.log(1 + np.array([get_concreteness(word) for word in to_words(sentence)]))
 
 
-def get_frequency_table_rankings(sentence):
-    if 'FREQUENCY_RANKING' not in globals():
-        global FREQUENCY_RANKING
-        FREQUENCY_RANKING = get_frequency_ranking()
-    # TODO: Default value is completely arbitrary
-    return np.log(1 + np.array([FREQUENCY_RANKING.get(word, 100) for word in to_words(sentence)]))
+def get_frequency_table_ranks(sentence):
+    return np.log(1 + np.array([get_rank(word) for word in to_words(sentence)]))
+
+
+def get_wordrank_score(sentence):
+    # Computed as the third quartile of log ranks
+    words = to_words(remove_stopwords(remove_punctuation_tokens(sentence)))
+    words = [word for word in words if word in get_word2rank()]
+    if len(words) == 0:
+        return np.log(1 + len(get_word2rank()))  # TODO: This is completely arbitrary
+    return np.quantile([get_log_rank(word) for word in words], 0.75)
 
 
 def count_characters(sentence):
@@ -94,11 +137,11 @@ def count_syllables_per_word(sentence):
 
 
 def max_pos_in_freq_table(sentence):
-    return max(get_frequency_table_rankings(sentence))
+    return max(get_frequency_table_ranks(sentence))
 
 
 def average_pos_in_freq_table(sentence):
-    return np.mean(get_frequency_table_rankings(sentence))
+    return np.mean(get_frequency_table_ranks(sentence))
 
 
 def min_concreteness(sentence):
@@ -132,6 +175,14 @@ sentence_feature_extractors = [
 
 
 # Sentence pair feature extractors with signature method(complex_sentence, simple_sentence) -> float
+def count_sentence_split(complex_sentence, simple_sentence):
+    return safe_division(count_sentences(complex_sentence), count_sentences(simple_sentence))
+
+
+def get_compression_ratio(complex_sentence, simple_sentence):
+    return safe_division(count_characters(complex_sentence), count_characters(simple_sentence))
+
+
 def word_intersection(complex_sentence, simple_sentence):
     complex_words = to_words(complex_sentence)
     simple_words = to_words(simple_sentence)
@@ -140,14 +191,14 @@ def word_intersection(complex_sentence, simple_sentence):
     return nb_common_words / nb_max_words
 
 
-@functools.lru_cache(maxsize=10000)
+@lru_cache(maxsize=10000)
 def average_dot(complex_sentence, simple_sentence):
     complex_embeddings = to_embeddings(complex_sentence)
     simple_embeddings = to_embeddings(simple_sentence)
     return float(torch.dot(complex_embeddings.mean(dim=0), simple_embeddings.mean(dim=0)))
 
 
-@functools.lru_cache(maxsize=10000)
+@lru_cache(maxsize=10000)
 def average_cosine(complex_sentence, simple_sentence):
     complex_embeddings = to_embeddings(complex_sentence)
     simple_embeddings = to_embeddings(simple_sentence)
@@ -156,7 +207,7 @@ def average_cosine(complex_sentence, simple_sentence):
                                      dim=0))
 
 
-@functools.lru_cache(maxsize=10000)
+@lru_cache(maxsize=10000)
 def hungarian_dot(complex_sentence, simple_sentence):
     complex_embeddings = to_embeddings(complex_sentence)
     simple_embeddings = to_embeddings(simple_sentence)
@@ -166,7 +217,7 @@ def hungarian_dot(complex_sentence, simple_sentence):
     return float(similarity_matrix[row_indexes, col_indexes].sum() / max(len(complex_sentence), len(simple_sentence)))
 
 
-@functools.lru_cache(maxsize=10000)
+@lru_cache(maxsize=10000)
 def hungarian_cosine(complex_sentence, simple_sentence):
     complex_embeddings = to_embeddings(complex_sentence)
     simple_embeddings = to_embeddings(simple_sentence)
@@ -184,7 +235,7 @@ def characters_per_sentence_difference(complex_sentence, simple_sentence):
 
 
 # Making one call to nlgeval returns all metrics, we therefore cache the results in order to limit the number of calls
-@functools.lru_cache(maxsize=10000)
+@lru_cache(maxsize=10000)
 def get_all_nlgeval_metrics(complex_sentence, simple_sentence):
     if 'NLGEVAL' not in globals():
         global NLGEVAL

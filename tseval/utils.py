@@ -33,6 +33,17 @@ def write_lines(lines, filepath):
             f.write(line + '\n')
 
 
+def yield_lines(filepath, n_lines=float('inf'), prop=1):
+    if prop < 1:
+        assert n_lines == float('inf')
+        n_lines = int(prop * count_lines(filepath))
+    with open(filepath, 'r') as f:
+        for i, l in enumerate(f):
+            if i >= n_lines:
+                break
+            yield l.rstrip('\n')
+
+
 def hash_numpy_array(x):
     assert type(x) == np.ndarray
     # Note: tobytes() Makes a copy of the array

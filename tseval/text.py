@@ -5,31 +5,53 @@
 # LICENSE file in the root directory of this source tree.
 #
 
+from functools import lru_cache
 import re
 from string import punctuation
 
 import nltk
 from nltk.tokenize.nist import NISTTokenizer
+from nltk.corpus import stopwords as nltk_stopwords
 
 
-# TODO: move methods to ts.preprocessing?
+# TODO: #language_specific
+stopwords = set(nltk_stopwords.words('english'))
+
+
+@lru_cache(maxsize=1)
+def get_nist_tokenizer():
+    return NISTTokenizer()
+
+
+@lru_cache(maxsize=100)  # To speed up subsequent calls
+def word_tokenize(sentence):
+    return ' '.join(get_nist_tokenizer().tokenize(sentence))
+
+
+def to_words(sentence):
+    return sentence.split()
+
+
+@lru_cache(maxsize=1000)
 def is_punctuation(word):
     return word in punctuation
 
 
-def to_words(sentence, tokenize=True, remove_punctuation=False):
-    if tokenize:
-        nist = NISTTokenizer()
-        words = nist.tokenize(sentence)
-    else:
-        words = sentence.split()
-    if remove_punctuation:
-        words = [w for w in words if not is_punctuation(w)]
-    return words
+@lru_cache(maxsize=100)
+def remove_punctuation_tokens(text):
+    return ' '.join([w for w in to_words(text) if not is_punctuation(w)])
+
+
+def remove_stopwords(text):
+    return ' '.join([w for w in to_words(text) if w.lower() not in stopwords])
 
 
 def count_words(sentence, tokenize=True, remove_punctuation=False):
-    return len(to_words(sentence, tokenize, remove_punctuation))
+    if tokenize:
+        sentence = word_tokenize(sentence)
+    if remove_punctuation:
+        sentence = remove_punctuation_tokens(sentence)
+    return len(to_words(sentence))
 
 
 def to_sentences(text, language='english'):
@@ -190,6 +212,6 @@ def count_syllables_in_word(word):
     return count
 
 
-def count_syllables_in_sentence(sentence, remove_punctuation=True):
+def count_syllables_in_sentence(sentence):
     return sum([count_syllables_in_word(word)
-                for word in to_words(sentence, remove_punctuation)])
+                for word in to_words(remove_punctuation_tokens(sentence))])

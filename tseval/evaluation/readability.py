@@ -5,7 +5,7 @@
 # LICENSE file in the root directory of this source tree.
 #
 
-from tseval.text import count_words, count_syllables_in_sentence
+from tseval.text import count_words, count_syllables_in_sentence, remove_punctuation_tokens
 
 
 # https://en.wikipedia.org/wiki/Flesch%E2%80%93Kincaid_readability_tests
@@ -17,7 +17,7 @@ class ReadabilityScorer:
         self.nb_sentences = 0
 
     def add_sentence(self, sentence):
-        self.nb_words += count_words(sentence, remove_punctuation=True)
+        self.nb_words += count_words(remove_punctuation_tokens(sentence))
         self.nb_syllables += count_syllables_in_sentence(sentence)
         self.nb_sentences += 1
 
