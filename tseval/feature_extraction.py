@@ -5,10 +5,12 @@
 # LICENSE file in the root directory of this source tree.
 #
 
+from collections import Counter
 import itertools
 from functools import lru_cache
 import os
 
+import Levenshtein
 from nlgeval import NLGEval
 from nltk.translate.bleu_score import sentence_bleu, SmoothingFunction
 import numpy as np
@@ -50,7 +52,7 @@ def get_word2frequency():
 
 
 @lru_cache(maxsize=1)
-def get_word2rank(vocab_size=np.inf):
+def get_word2rank(vocab_size=50000):
     # TODO: Decrease vocab size or load from smaller file
     word2rank = {}
     line_generator = yield_lines(FASTTEXT_EMBEDDINGS_PATH)
@@ -175,7 +177,7 @@ sentence_feature_extractors = [
 
 
 # Sentence pair feature extractors with signature method(complex_sentence, simple_sentence) -> float
-def count_sentence_split(complex_sentence, simple_sentence):
+def count_sentence_splits(complex_sentence, simple_sentence):
     return safe_division(count_sentences(complex_sentence), count_sentences(simple_sentence))
 
 
@@ -232,6 +234,28 @@ def hungarian_cosine(complex_sentence, simple_sentence):
 
 def characters_per_sentence_difference(complex_sentence, simple_sentence):
     return count_characters_per_sentence(complex_sentence) - count_characters_per_sentence(simple_sentence)
+
+
+def is_exact_match(complex_sentence, simple_sentence):
+    return complex_sentence == simple_sentence
+
+
+def get_levenshtein_similarity(complex_sentence, simple_sentence):
+    return Levenshtein.ratio(complex_sentence, simple_sentence)
+
+
+def get_levenshtein_distance(complex_sentence, simple_sentence):
+    return 1 - get_levenshtein_similarity(complex_sentence, simple_sentence)
+
+
+def get_additions_proportion(complex_sentence, simple_sentence):
+    n_additions = sum((Counter(to_words(simple_sentence)) - Counter(to_words(complex_sentence))).values())
+    return n_additions / max(count_words(complex_sentence), count_words(simple_sentence))
+
+
+def get_deletions_proportion(complex_sentence, simple_sentence):
+    n_deletions = sum((Counter(to_words(complex_sentence)) - Counter(to_words(simple_sentence))).values())
+    return n_deletions / max(count_words(complex_sentence), count_words(simple_sentence))
 
 
 # Making one call to nlgeval returns all metrics, we therefore cache the results in order to limit the number of calls
