@@ -5,29 +5,28 @@
 # LICENSE file in the root directory of this source tree.
 #
 
-import os
+from pathlib import Path
 
 
-REPO_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
-RESOURCES_DIR = os.path.join(REPO_DIR, 'resources')
-DOWNLOAD_DIR = os.path.join(RESOURCES_DIR, 'download')
-DATASETS_DIR = os.path.join(RESOURCES_DIR, 'datasets')
-VARIOUS_DIR = os.path.join(RESOURCES_DIR, 'various')
-MODELS_DIR = os.path.join(RESOURCES_DIR, 'models')
-TOOLS_DIR = os.path.join(RESOURCES_DIR, 'tools')
+REPO_DIR = Path(__file__).resolve().parent.parent.parent
+RESOURCES_DIR = REPO_DIR / 'resources'
+DOWNLOAD_DIR = RESOURCES_DIR / 'download'
+DATASETS_DIR = RESOURCES_DIR / 'datasets'
+VARIOUS_DIR = RESOURCES_DIR / 'various'
+MODELS_DIR = RESOURCES_DIR / 'models'
+TOOLS_DIR = RESOURCES_DIR / 'tools'
 # TODO: Move this to setup or add the folders to the git repo
 for dir_path in [DOWNLOAD_DIR, DATASETS_DIR, VARIOUS_DIR, MODELS_DIR, TOOLS_DIR]:
-    if not os.path.exists(dir_path):
-        os.makedirs(dir_path)
-FASTTEXT_EMBEDDINGS_PATH = os.path.join(VARIOUS_DIR, 'fasttext-vectors', 'cc.en.300.vec')
-TERP_DIR = os.path.join(TOOLS_DIR, 'terp')
-TERP_PATH = os.path.join(TERP_DIR, 'bin/terp')
-QUEST_DIR = os.path.join(TOOLS_DIR, 'questplusplus')
-WORDNET_DIR = os.path.join(TOOLS_DIR, 'WordNet-3.0')
+    dir_path.mkdir(exist_ok=True, parents=True)
+FASTTEXT_EMBEDDINGS_PATH = VARIOUS_DIR / 'fasttext-vectors/cc.en.300.vec'
+TERP_DIR = TOOLS_DIR / 'terp'
+TERP_PATH = TERP_DIR / 'bin/terp'
+QUEST_DIR = TOOLS_DIR / 'questplusplus'
+WORDNET_DIR = TOOLS_DIR / 'WordNet-3.0'
 
 
 def get_dataset_dir(dataset):
-    return os.path.join(DATASETS_DIR, dataset)
+    return DATASETS_DIR / dataset
 
 
 def get_data_file_path(dataset, phase, language, i=None):
