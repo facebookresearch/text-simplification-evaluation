@@ -19,7 +19,7 @@ TOOLS_DIR = os.path.join(RESOURCES_DIR, 'tools')
 for dir_path in [DOWNLOAD_DIR, DATASETS_DIR, VARIOUS_DIR, MODELS_DIR, TOOLS_DIR]:
     if not os.path.exists(dir_path):
         os.makedirs(dir_path)
-FASTTEXT_EMBEDDINGS_PATH = os.path.join(VARIOUS_DIR, 'fasttext-vectors', 'wiki.en.vec')
+FASTTEXT_EMBEDDINGS_PATH = os.path.join(VARIOUS_DIR, 'fasttext-vectors', 'cc.en.300.vec')
 TERP_DIR = os.path.join(TOOLS_DIR, 'terp')
 TERP_PATH = os.path.join(TERP_DIR, 'bin/terp')
 QUEST_DIR = os.path.join(TOOLS_DIR, 'questplusplus')

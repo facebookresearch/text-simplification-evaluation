@@ -7,6 +7,7 @@
 
 import os
 from pathlib import Path
+import shutil
 
 from tseval.utils import run_command
 from .resources_utils import download, download_and_extract, move_with_overwrite, git_clone
@@ -78,9 +79,10 @@ def _prepare_fairseq_lm():
 
 
 def _prepare_fasttext_embeddings():
-    url = 'https://s3-us-west-1.amazonaws.com/fasttext-vectors/wiki.en.vec'
+    url = 'https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.en.300.vec.gz'
+    [extracted_path] = download_and_extract(url)
     Path(FASTTEXT_EMBEDDINGS_PATH).parent.mkdir(parents=True, exist_ok=True)
-    download(url, FASTTEXT_EMBEDDINGS_PATH)
+    shutil.move(extracted_path, FASTTEXT_EMBEDDINGS_PATH)
 
 
 def _prepare_wordnet():
