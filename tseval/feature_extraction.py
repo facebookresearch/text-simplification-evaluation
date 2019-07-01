@@ -27,6 +27,7 @@ from tseval.evaluation.readability import sentence_fre, sentence_fkgl
 from tseval.evaluation.terp import get_terp_vectorizers
 from tseval.evaluation.quest import get_quest_vectorizers
 from tseval.resources.paths import VARIOUS_DIR, FASTTEXT_EMBEDDINGS_PATH
+from tseval.resources.prepare import _prepare_fasttext_embeddings
 from tseval.text import (count_words, count_sentences, to_words, count_syllables_in_sentence, remove_stopwords,
                          remove_punctuation_tokens)
 from tseval.models.language_models import average_sentence_lm_prob, min_sentence_lm_prob
@@ -53,7 +54,8 @@ def get_word2frequency():
 
 @lru_cache(maxsize=1)
 def get_word2rank(vocab_size=50000):
-    # TODO: Decrease vocab size or load from smaller file
+    if not FASTTEXT_EMBEDDINGS_PATH.exists():
+        _prepare_fasttext_embeddings()
     word2rank = {}
     line_generator = yield_lines(FASTTEXT_EMBEDDINGS_PATH)
     next(line_generator)  # Skip the first line (header)
