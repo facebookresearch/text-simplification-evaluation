@@ -184,7 +184,7 @@ def count_sentence_splits(complex_sentence, simple_sentence):
 
 
 def get_compression_ratio(complex_sentence, simple_sentence):
-    return safe_division(count_characters(complex_sentence), count_characters(simple_sentence))
+    return safe_division(count_characters(simple_sentence), count_characters(complex_sentence))
 
 
 def word_intersection(complex_sentence, simple_sentence):
