@@ -157,25 +157,26 @@ def average_concreteness(sentence):
 
 
 # OPTIMIZE: Optimize feature extractors? A lot of computation is duplicated (e.g. to_words)
-sentence_feature_extractors = [
-    count_words,
-    count_characters,
-    count_sentences,
-    count_syllables_in_sentence,
-    count_words_per_sentence,
-    count_characters_per_sentence,
-    count_syllables_per_sentence,
-    count_characters_per_word,
-    count_syllables_per_word,
-    max_pos_in_freq_table,
-    average_pos_in_freq_table,
-    min_concreteness,
-    average_concreteness,
-    sentence_fre,
-    sentence_fkgl,
-    average_sentence_lm_prob,
-    min_sentence_lm_prob,
-]
+def get_sentence_feature_extractors():
+    return [
+        count_words,
+        count_characters,
+        count_sentences,
+        count_syllables_in_sentence,
+        count_words_per_sentence,
+        count_characters_per_sentence,
+        count_syllables_per_sentence,
+        count_characters_per_word,
+        count_syllables_per_word,
+        max_pos_in_freq_table,
+        average_pos_in_freq_table,
+        min_concreteness,
+        average_concreteness,
+        sentence_fre,
+        sentence_fkgl,
+        average_sentence_lm_prob,
+        min_sentence_lm_prob,
+    ]
 
 
 # Sentence pair feature extractors with signature method(complex_sentence, simple_sentence) -> float
@@ -322,14 +323,15 @@ Signature: scoring_method(complex_sentence, simple_setence)
     return methods
 
 
-sentence_pair_feature_extractors = [
-    word_intersection,
-    characters_per_sentence_difference,
-    average_dot,
-    average_cosine,
-    hungarian_dot,
-    hungarian_cosine,
-] + get_nlgeval_methods() + get_nltk_bleu_methods() + get_terp_vectorizers() + get_quest_vectorizers()
+def get_sentence_pair_feature_extractors():
+    return [
+        word_intersection,
+        characters_per_sentence_difference,
+        average_dot,
+        average_cosine,
+        hungarian_dot,
+        hungarian_cosine,
+    ] + get_nlgeval_methods() + get_nltk_bleu_methods() + get_terp_vectorizers() + get_quest_vectorizers()
 
 
 # Various
@@ -358,7 +360,7 @@ def reverse_vectorizer(vectorizer):
 
 def get_all_vectorizers(reversed=False):
     vectorizers = [wrap_single_sentence_vectorizer(vectorizer)
-                   for vectorizer in sentence_feature_extractors] + sentence_pair_feature_extractors
+                   for vectorizer in get_sentence_feature_extractors()] + get_sentence_pair_feature_extractors()
     if reversed:
         vectorizers += [reverse_vectorizer(vectorizer) for vectorizer in vectorizers]
     return vectorizers
