@@ -5,7 +5,7 @@
 # LICENSE file in the root directory of this source tree.
 #
 
-from distutils.core import setup
+from setuptools import setup, find_packages
 
 
 setup(name='tseval',
@@ -13,4 +13,4 @@ setup(name='tseval',
       description='Reference-less Text Simplification Evaluation Methods',
       author='Louis Martin',
       author_email='louismartin@fb.com',
-      packages=['tseval'])
+      packages=find_packages())
