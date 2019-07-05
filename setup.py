@@ -13,6 +13,7 @@ from setuptools.command.install import install
 def _post_setup():
     from nltk.downloader import download
     download('stopwords')
+    download('perluniprops')
 
 
 # Set up post install actions as per https://stackoverflow.com/a/36902139/1226799
