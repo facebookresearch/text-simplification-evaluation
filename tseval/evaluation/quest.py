@@ -15,8 +15,8 @@ import numpy as np
 import pandas as pd
 
 from tseval.qats import get_qats_train_data, get_qats_test_data
-from tseval.utils import numpy_memoize, write_lines, run_command
-from tseval.resources.paths import QUEST_DIR
+from tseval.utils.helpers import numpy_memoize, write_lines, run_command
+from tseval.utils.paths import QUEST_DIR
 
 
 quest_features = [

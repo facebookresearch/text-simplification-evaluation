@@ -17,7 +17,7 @@ from sklearn.metrics import f1_score, make_scorer
 from sklearn.model_selection import cross_val_score
 from sklearn.pipeline import Pipeline
 
-from tseval.resources.paths import VARIOUS_DIR, get_dataset_dir
+from tseval.utils.paths import VARIOUS_DIR, get_dataset_dir
 from tseval.text import nist_tokenize
 
 
@@ -64,7 +64,7 @@ def pearsonr_with_confidence_interval(x, y, alpha=0.05):
 
 def check_data():
     if not (Path(get_dataset_dir('qats2016')) / 'train.shared-task.tsv').exists():
-        from tseval.resources.prepare import prepare_resource
+        from tseval.utils.prepare import prepare_resource
         prepare_resource('qats2016')
 
 

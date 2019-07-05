@@ -12,8 +12,8 @@ import tempfile
 import numpy as np
 
 from tseval.qats import get_qats_train_data, get_qats_test_data
-from tseval.resources.paths import TERP_PATH, TERP_DIR
-from tseval.utils import run_command, write_lines, numpy_memoize
+from tseval.utils.paths import TERP_PATH, TERP_DIR
+from tseval.utils.helpers import run_command, write_lines, numpy_memoize
 
 
 def write_lines_to_trans_format(lines, output_filepath):

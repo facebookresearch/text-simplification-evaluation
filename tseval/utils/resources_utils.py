@@ -19,7 +19,7 @@ import zipfile
 import git
 from tqdm import tqdm
 
-from tseval.resources.paths import DOWNLOAD_DIR
+from tseval.utils.paths import DOWNLOAD_DIR
 
 
 def reporthook(count, block_size, total_size):

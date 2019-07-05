@@ -11,7 +11,7 @@ import os
 from fairseq import options, utils, tasks
 import torch
 
-from tseval.resources.paths import MODELS_DIR
+from tseval.utils.paths import MODELS_DIR
 
 
 def load_fairseq_lm_model_and_dict(checkpoint_path, data_path):
@@ -29,7 +29,7 @@ def init_fairseq_lm_globals():
     checkpoint_path = os.path.join(fairseq_lm_dir, 'wiki103.pt')
     data_path = os.path.join(MODELS_DIR, 'language_models/wiki103_test_lm')
     if not os.path.exists(data_path):
-        from tseval.resources.prepare import prepare_resource
+        from tseval.utils.prepare import prepare_resource
         prepare_resource('fairseq_lm')
     global FAIRSEQ_MODEL, DICTIONARY, DEVICE
     FAIRSEQ_MODEL, DICTIONARY = load_fairseq_lm_model_and_dict(checkpoint_path, data_path)

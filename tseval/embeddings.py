@@ -10,13 +10,13 @@ import os
 import numpy as np
 import torch
 
-from tseval.resources.paths import FASTTEXT_EMBEDDINGS_PATH
+from tseval.utils.paths import FASTTEXT_EMBEDDINGS_PATH
 from tseval.text import to_words
 
 
 def load_fasttext_embeddings(vocab_size=None):
         if not os.path.exists(FASTTEXT_EMBEDDINGS_PATH):
-            from tseval.resources.prepare import prepare_resource
+            from tseval.utils.prepare import prepare_resource
             prepare_resource('fasttext_embeddings')
         with open(FASTTEXT_EMBEDDINGS_PATH, 'r') as f:
             # First line contains number and size of vectors

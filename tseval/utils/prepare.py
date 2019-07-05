@@ -9,7 +9,7 @@ import os
 from pathlib import Path
 import shutil
 
-from tseval.utils import run_command
+from tseval.utils.helpers import run_command
 from .resources_utils import download, download_and_extract, move_with_overwrite, git_clone
 from .paths import VARIOUS_DIR, MODELS_DIR, FASTTEXT_EMBEDDINGS_PATH, TERP_DIR, WORDNET_DIR, QUEST_DIR, get_dataset_dir
 

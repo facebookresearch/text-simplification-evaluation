@@ -26,11 +26,11 @@ from tseval.embeddings import to_embeddings
 from tseval.evaluation.readability import sentence_fre, sentence_fkgl
 from tseval.evaluation.terp import get_terp_vectorizers
 from tseval.evaluation.quest import get_quest_vectorizers
-from tseval.resources.paths import VARIOUS_DIR
+from tseval.utils.paths import VARIOUS_DIR
 from tseval.text import (count_words, count_sentences, to_words, count_syllables_in_sentence, remove_stopwords,
                          remove_punctuation_tokens)
 from tseval.models.language_models import average_sentence_lm_prob, min_sentence_lm_prob
-from tseval.utils import yield_lines
+from tseval.utils.helpers import yield_lines
 
 
 @lru_cache(maxsize=1)
