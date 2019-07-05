@@ -13,4 +13,5 @@ setup(name='tseval',
       description='Reference-less Text Simplification Evaluation Methods',
       author='Louis Martin',
       author_email='louismartin@fb.com',
+      include_package_data=True,
       packages=find_packages())
