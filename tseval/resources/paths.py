@@ -8,13 +8,13 @@
 from pathlib import Path
 
 
-REPO_DIR = Path(__file__).resolve().parent.parent.parent
-RESOURCES_DIR = REPO_DIR / 'resources'
-DOWNLOAD_DIR = RESOURCES_DIR / 'download'
-DATASETS_DIR = RESOURCES_DIR / 'datasets'
-VARIOUS_DIR = RESOURCES_DIR / 'various'
-MODELS_DIR = RESOURCES_DIR / 'models'
-TOOLS_DIR = RESOURCES_DIR / 'tools'
+PACKAGE_DIR = Path(__file__).resolve().parent.parent
+DATA_DIR = PACKAGE_DIR / 'data'
+DOWNLOAD_DIR = DATA_DIR / 'download'
+DATASETS_DIR = DATA_DIR / 'datasets'
+VARIOUS_DIR = DATA_DIR / 'various'
+MODELS_DIR = DATA_DIR / 'models'
+TOOLS_DIR = DATA_DIR / 'tools'
 # TODO: Move this to setup or add the folders to the git repo
 for dir_path in [DOWNLOAD_DIR, DATASETS_DIR, VARIOUS_DIR, MODELS_DIR, TOOLS_DIR]:
     dir_path.mkdir(exist_ok=True, parents=True)
@@ -36,7 +36,5 @@ def get_data_file_path(dataset, phase, language, i=None):
     assert phase in ['train', 'valid', 'test']
     filename = f'{dataset}.{phase}.{language}{suffix}'
     dataset_dir = get_dataset_dir(dataset)
-    if not os.path.exists(dataset_dir):
-        print(f'Creating {dataset_dir}')
-        os.makedirs(dataset_dir)
-    return os.path.join(dataset_dir, filename)
+    dataset_dir.mkdir(parents=True, exist_ok=True)
+    return str(dataset_dir / filename)
