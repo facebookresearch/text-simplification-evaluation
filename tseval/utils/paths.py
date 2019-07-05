@@ -9,14 +9,14 @@ from pathlib import Path
 
 
 PACKAGE_DIR = Path(__file__).resolve().parent.parent
-DATA_DIR = PACKAGE_DIR / 'data'
-DOWNLOAD_DIR = DATA_DIR / 'download'
-DATASETS_DIR = DATA_DIR / 'datasets'
-VARIOUS_DIR = DATA_DIR / 'various'
-MODELS_DIR = DATA_DIR / 'models'
-TOOLS_DIR = DATA_DIR / 'tools'
+RESOURCES_DIR = PACKAGE_DIR / 'resources'
+DOWNLOAD_DIR = RESOURCES_DIR / 'download'
+RESOURCESSETS_DIR = RESOURCES_DIR / 'datasets'
+VARIOUS_DIR = RESOURCES_DIR / 'various'
+MODELS_DIR = RESOURCES_DIR / 'models'
+TOOLS_DIR = RESOURCES_DIR / 'tools'
 # TODO: Move this to setup or add the folders to the git repo
-for dir_path in [DOWNLOAD_DIR, DATASETS_DIR, VARIOUS_DIR, MODELS_DIR, TOOLS_DIR]:
+for dir_path in [DOWNLOAD_DIR, RESOURCESSETS_DIR, VARIOUS_DIR, MODELS_DIR, TOOLS_DIR]:
     dir_path.mkdir(exist_ok=True, parents=True)
 FASTTEXT_EMBEDDINGS_PATH = VARIOUS_DIR / 'fasttext-vectors/cc.en.300.vec'
 TERP_DIR = TOOLS_DIR / 'terp'
@@ -26,7 +26,7 @@ WORDNET_DIR = TOOLS_DIR / 'WordNet-3.0'
 
 
 def get_dataset_dir(dataset):
-    return DATASETS_DIR / dataset
+    return RESOURCESSETS_DIR / dataset
 
 
 def get_data_file_path(dataset, phase, language, i=None):

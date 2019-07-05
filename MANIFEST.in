@@ -1,2 +1,2 @@
-include tseval/data/various/*.tsv
-include tseval/data/various/*.csv
+include tseval/resources/various/*.tsv
+include tseval/resources/various/qats2016_result/*.csv
