@@ -15,7 +15,7 @@ setup(name='tseval',
       author_email='louismartin@fb.com',
       include_package_data=True,
       install_requires=[
-          'numpy', 'scipy', 'pandas', 'torch', 'sklearn', 'python-Levenshtein', 'gitpython',
+          'numpy>=1.1.15', 'scipy', 'pandas', 'torch', 'sklearn', 'python-Levenshtein', 'gitpython',
           'nlg-eval@git+https://github.com/Maluuba/nlg-eval.git',
           'fairseq@git+https://github.com/pytorch/fairseq@e286243c68f1589a781488580fc19388714612be',
           ],
