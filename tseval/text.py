@@ -10,12 +10,23 @@ import re
 from string import punctuation
 
 import nltk
-from nltk.tokenize.nist import NISTTokenizer
 from nltk.corpus import stopwords as nltk_stopwords
+try:
+    from nltk.tokenize.nist import NISTTokenizer
+except LookupError:
+    nltk.download('perluniprops')
+
 
 
 # TODO: #language_specific
-stopwords = set(nltk_stopwords.words('english'))
+@lru_cache(maxsize=1)
+def get_stopwords():
+    try:
+        return set(nltk_stopwords.words('english'))
+    except LookupError:
+        nltk.download('stopwords')
+        return set(nltk_stopwords.words('english'))
+
 
 
 @lru_cache(maxsize=1)
@@ -43,7 +54,7 @@ def remove_punctuation_tokens(text):
 
 
 def remove_stopwords(text):
-    return ' '.join([w for w in to_words(text) if w.lower() not in stopwords])
+    return ' '.join([w for w in to_words(text) if w.lower() not in get_stopwords()])
 
 
 def count_words(sentence, tokenize=True, remove_punctuation=False):
