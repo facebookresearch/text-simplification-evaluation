@@ -11,7 +11,6 @@ from functools import lru_cache
 import os
 
 import Levenshtein
-from nlgeval import NLGEval
 from nltk.translate.bleu_score import sentence_bleu, SmoothingFunction
 import numpy as np
 import pandas as pd
@@ -257,16 +256,21 @@ def get_deletions_proportion(complex_sentence, simple_sentence):
     return n_deletions / max(count_words(complex_sentence), count_words(simple_sentence))
 
 
+@lru_cache(maxsize=1)
+def get_nlgeval():
+    try:
+        from nlgeval import NLGEval
+    except ModuleNotFoundError:
+        print('nlg-eval module not installed. Please install with ',
+              'pip install nlg-eval@git+https://github.com/Maluuba/nlg-eval.git')
+    print('Loading NLGEval models...')
+    return NLGEval(no_skipthoughts=True, no_glove=True)
+
+
 # Making one call to nlgeval returns all metrics, we therefore cache the results in order to limit the number of calls
 @lru_cache(maxsize=10000)
 def get_all_nlgeval_metrics(complex_sentence, simple_sentence):
-    if 'NLGEVAL' not in globals():
-        global NLGEVAL
-        print('Loading NLGEval models...')
-        # Change False to True if you want to use skipthought or glove
-        NLGEVAL = NLGEval(no_skipthoughts=True, no_glove=True)
-        print('Done.')
-    return NLGEVAL.compute_individual_metrics([complex_sentence], simple_sentence)
+    return get_nlgeval().compute_individual_metrics([complex_sentence], simple_sentence)
 
 
 def get_nlgeval_methods():

@@ -39,7 +39,8 @@ setup(
     include_package_data=True,
     install_requires=[
         'numpy>=1.1.15', 'scipy', 'pandas', 'torch', 'sklearn', 'python-Levenshtein', 'gitpython',
-        'nlg-eval@git+https://github.com/Maluuba/nlg-eval.git',
+        # Commented out because of https://github.com/Maluuba/nlg-eval/issues/77
+        # 'nlg-eval@git+https://github.com/Maluuba/nlg-eval.git',
         'fairseq@git+https://github.com/pytorch/fairseq@e286243c68f1589a781488580fc19388714612be',
         ],
     cmdclass={
