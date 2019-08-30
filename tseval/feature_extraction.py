@@ -176,7 +176,7 @@ def get_sentence_feature_extractors():
 
 # Sentence pair feature extractors with signature method(complex_sentence, simple_sentence) -> float
 def count_sentence_splits(complex_sentence, simple_sentence):
-    return safe_division(count_sentences(complex_sentence), count_sentences(simple_sentence))
+    return safe_division(count_sentences(simple_sentence), count_sentences(complex_sentence))
 
 
 def get_compression_ratio(complex_sentence, simple_sentence):
