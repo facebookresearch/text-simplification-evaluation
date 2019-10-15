@@ -1,5 +1,7 @@
 # Reference-less Quality Estimation of Text Simplification Systems
 
+*Note: if you are looking for a tool to evaluate your simplification models, head over to [EASSE](https://github.com/feralvam/easse) instead.*
+
 This repository contains the original implementation of the evaluation methods presented in [Reference-less Quality Estimation of Text Simplification Systems](https://www.aclweb.org/anthology/W18-7005) (1st Workshop on Automatic Text Adaption, INLG 2018).
 The version that was used at submission time is on branch [submission](https://github.com/facebookresearch/text-simplification-evaluation/tree/submission).
 
