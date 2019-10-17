@@ -20,6 +20,7 @@ setup(
         'numpy>=1.1.15', 'scipy', 'pandas', 'torch', 'sklearn', 'python-Levenshtein', 'gitpython', 'nltk',
         # Commented out because of https://github.com/Maluuba/nlg-eval/issues/77
         # 'nlg-eval@git+https://github.com/Maluuba/nlg-eval.git',
-        'fairseq@git+https://github.com/pytorch/fairseq@e286243c68f1589a781488580fc19388714612be',
+        # Commented out because out of date
+        # 'fairseq@git+https://github.com/pytorch/fairseq@cc292afaedd01bc2641f515190917627b437bde7',
         ],
 )

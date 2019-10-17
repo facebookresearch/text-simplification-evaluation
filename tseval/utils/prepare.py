@@ -63,14 +63,14 @@ def _prepare_brysbaert_concrete_words():
 
 def _prepare_fairseq_lm():
     # Download model
-    url = 'https://s3.amazonaws.com/fairseq-py/models/wiki103_fconv_lm.tar.bz2'
+    url = 'https://dl.fbaipublicfiles.com/fairseq/models/wiki103_fconv_lm.tar.bz2'
     extracted_paths = download_and_extract(url)
     output_dir = os.path.join(MODELS_DIR, 'language_models/wiki103_fconv_lm')
     Path(output_dir).mkdir(parents=True, exist_ok=True)
     for extracted_path in extracted_paths:
         move_with_overwrite(extracted_path, output_dir)
     # Download data and dictionary
-    url = 'https://s3.amazonaws.com/fairseq-py/data/wiki103_test_lm.tar.bz2'
+    url = 'https://dl.fbaipublicfiles.com/fairseq/data/wiki103_test_lm.tar.bz2'
     extracted_paths = download_and_extract(url)
     output_dir = os.path.join(MODELS_DIR, 'language_models/wiki103_test_lm')
     Path(output_dir).mkdir(parents=True, exist_ok=True)

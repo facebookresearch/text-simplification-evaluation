@@ -8,13 +8,14 @@
 import functools
 import os
 
-from fairseq import options, utils, tasks
 import torch
 
 from tseval.utils.paths import MODELS_DIR
 
 
 def load_fairseq_lm_model_and_dict(checkpoint_path, data_path):
+    raise NotImplementedError('Language modeling is out of date with newer versions of fairseq')
+    from fairseq import options, utils, tasks
     # Initialize model
     parser = options.get_eval_lm_parser()
     parsed_args = options.parse_args_and_arch(parser, ['--path', checkpoint_path, data_path])
