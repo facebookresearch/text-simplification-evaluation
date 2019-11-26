@@ -246,6 +246,16 @@ def get_levenshtein_distance(complex_sentence, simple_sentence):
     return 1 - get_levenshtein_similarity(complex_sentence, simple_sentence)
 
 
+def get_additions_proportion(complex_sentence, simple_sentence):
+    n_additions = sum((Counter(to_words(simple_sentence)) - Counter(to_words(complex_sentence))).values())
+    return n_additions / max(count_words(complex_sentence), count_words(simple_sentence))
+
+
+def get_deletions_proportion(complex_sentence, simple_sentence):
+    n_deletions = sum((Counter(to_words(complex_sentence)) - Counter(to_words(simple_sentence))).values())
+    return n_deletions / max(count_words(complex_sentence), count_words(simple_sentence))
+
+
 def flatten_counter(counter):
     return [k for key, count in counter.items() for k in [key] * count]
 
@@ -307,6 +317,7 @@ def get_n_reordered_words(c, s):
 
 
 def get_added_words_proportion(c, s):
+    # TODO: Duplicate of get_addition_proportion, same for deletion
     # Relative to simple sentence
     return get_n_added_words(c, s) / count_words(s)
 
