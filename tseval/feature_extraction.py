@@ -246,14 +246,84 @@ def get_levenshtein_distance(complex_sentence, simple_sentence):
     return 1 - get_levenshtein_similarity(complex_sentence, simple_sentence)
 
 
-def get_additions_proportion(complex_sentence, simple_sentence):
-    n_additions = sum((Counter(to_words(simple_sentence)) - Counter(to_words(complex_sentence))).values())
-    return n_additions / max(count_words(complex_sentence), count_words(simple_sentence))
+def flatten_counter(counter):
+    return [k for key, count in counter.items() for k in [key] * count]
 
 
-def get_deletions_proportion(complex_sentence, simple_sentence):
-    n_deletions = sum((Counter(to_words(complex_sentence)) - Counter(to_words(simple_sentence))).values())
-    return n_deletions / max(count_words(complex_sentence), count_words(simple_sentence))
+def get_added_words(c, s):
+    return flatten_counter(Counter(to_words(s)) - Counter(to_words(c)))
+
+
+def get_deleted_words(c, s):
+    return flatten_counter(Counter(to_words(c)) - Counter(to_words(s)))
+
+
+def get_kept_words(c, s):
+    return flatten_counter(Counter(to_words(c)) & Counter(to_words(s)))
+
+
+def get_lcs(seq1, seq2):
+    '''Returns the longest common subsequence using memoization (only in local scope)'''
+    @lru_cache(maxsize=None)
+    def recursive_lcs(seq1, seq2):
+        if len(seq1) == 0 or len(seq2) == 0:
+            return []
+        if seq1[-1] == seq2[-1]:
+            return recursive_lcs(seq1[:-1], seq2[:-1]) + [seq1[-1]]
+        else:
+            return max(recursive_lcs(seq1[:-1], seq2), recursive_lcs(seq1, seq2[:-1]), key=lambda seq: len(seq))
+
+    try:
+        return recursive_lcs(tuple(seq1), tuple(seq2))
+    except RecursionError as e:
+        print(e)
+        # TODO: Handle this case
+        return []
+
+
+def get_reordered_words(c, s):
+    # A reordered word is a word that is contained in the source and simplification
+    # but not in the longuest common subsequence
+    c = c.lower()
+    s = s.lower()
+    lcs = get_lcs(to_words(c), to_words(s))
+    return flatten_counter(Counter(get_kept_words(c, s)) - Counter(lcs))
+
+
+def get_n_added_words(c, s):
+    return len(get_added_words(c, s))
+
+
+def get_n_deleted_words(c, s):
+    return len(get_deleted_words(c, s))
+
+
+def get_n_kept_words(c, s):
+    return len(get_kept_words(c, s))
+
+
+def get_n_reordered_words(c, s):
+    return len(get_reordered_words(c, s))
+
+
+def get_added_words_proportion(c, s):
+    # Relative to simple sentence
+    return get_n_added_words(c, s) / count_words(s)
+
+
+def get_deleted_words_proportion(c, s):
+    # Relative to complex sentence
+    return get_n_deleted_words(c, s) / count_words(c)
+
+
+def get_reordered_words_proportion(c, s):
+    # Relative to complex sentence
+    return get_n_deleted_words(c, s) / count_words(s)
+
+
+def only_deleted_words(c, s):
+    # Only counting deleted words does not work because sometimes there is reordering
+    return not is_exact_match(c, s) and get_lcs(to_words(c), to_words(s)) == to_words(s)
 
 
 @lru_cache(maxsize=1)
@@ -310,7 +380,7 @@ Signature: scoring_method(complex_sentence, simple_setence)
             try:
                 return sentence_bleu([complex_sentence.split()], simple_sentence.split(),
                                      smoothing_function=smoothing_function)
-            except AssertionError as e:
+            except AssertionError:
                 return 0
         return scoring_method
 
