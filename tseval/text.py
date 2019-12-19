@@ -9,28 +9,27 @@ from functools import lru_cache
 import re
 from string import punctuation
 
-import nltk
-from nltk.corpus import stopwords as nltk_stopwords
-try:
-    from nltk.tokenize.nist import NISTTokenizer
-except LookupError:
-    nltk.download('perluniprops')
 
-
-
-# TODO: #language_specific
 @lru_cache(maxsize=1)
 def get_stopwords():
+    # TODO: #language_specific
+    # Inline lazy import because importing nltk is slow
+    import nltk
     try:
-        return set(nltk_stopwords.words('english'))
+        return set(nltk.corpus.stopwords.words('english'))
     except LookupError:
         nltk.download('stopwords')
-        return set(nltk_stopwords.words('english'))
-
+        return set(nltk.corpus.stopwords.words('english'))
 
 
 @lru_cache(maxsize=1)
 def get_nist_tokenizer():
+    # Inline lazy import because importing nltk is slow
+    try:
+        from nltk.tokenize.nist import NISTTokenizer
+    except LookupError:
+        import nltk
+        nltk.download('perluniprops')
     return NISTTokenizer()
 
 
@@ -66,6 +65,8 @@ def count_words(sentence, tokenize=True, remove_punctuation=False):
 
 
 def to_sentences(text, language='english'):
+    # Inline lazy import because importing nltk is slow
+    import nltk
     tokenizer = nltk.data.load(f'tokenizers/punkt/{language}.pickle')
     return tokenizer.tokenize(text)
 
@@ -75,8 +76,7 @@ def count_sentences(text, language='english'):
 
 
 def nist_tokenize(sentence):
-    nist = NISTTokenizer()
-    return ' '.join(nist.tokenize(sentence))
+    return ' '.join(get_nist_tokenizer().tokenize(sentence))
 
 
 # Adapted from the following scripts:

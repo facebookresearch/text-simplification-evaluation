@@ -11,7 +11,6 @@ from functools import lru_cache
 import os
 
 import Levenshtein
-from nltk.translate.bleu_score import sentence_bleu, SmoothingFunction
 import numpy as np
 import pandas as pd
 from scipy.optimize import linear_sum_assignment
@@ -384,6 +383,9 @@ def get_nltk_bleu_methods():
     """Returns bleu methods with different smoothings from NLTK.
 Signature: scoring_method(complex_sentence, simple_setence)
     """
+    # Inline lazy import because importing nltk is slow
+    from nltk.translate.bleu_score import sentence_bleu, SmoothingFunction
+
     def get_scoring_method(smoothing_function):
         """Necessary to wrap the scoring_method() in get_scoring_method(), in order to set the external variable to
         its current value."""
