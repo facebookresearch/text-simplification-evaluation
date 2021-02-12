@@ -30,6 +30,7 @@ def get_nist_tokenizer():
     except LookupError:
         import nltk
         nltk.download('perluniprops')
+        from nltk.tokenize.nist import NISTTokenizer
     return NISTTokenizer()
 
 
