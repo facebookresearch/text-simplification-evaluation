@@ -17,7 +17,7 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     install_requires=[
-        'numpy>=1.1.15', 'scipy', 'pandas', 'torch', 'sklearn', 'python-Levenshtein', 'gitpython', 'nltk',
+        'numpy>=1.1.15', 'scipy', 'pandas', 'torch', 'scikit-learn', 'python-Levenshtein', 'gitpython', 'nltk',
         # Commented out because of https://github.com/Maluuba/nlg-eval/issues/77
         # 'nlg-eval@git+https://github.com/Maluuba/nlg-eval.git',
         # Commented out because out of date
